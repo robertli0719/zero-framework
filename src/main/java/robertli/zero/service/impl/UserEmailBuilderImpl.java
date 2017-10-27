@@ -9,12 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Resource;
-import org.springframework.stereotype.Component;
 import robertli.zero.core.EmailMessage;
 import robertli.zero.core.WebConfiguration;
 import robertli.zero.service.UserEmailBuilder;
 
-@Component("userEmailBuilder")
 public class UserEmailBuilderImpl implements UserEmailBuilder {
 
     @Resource
