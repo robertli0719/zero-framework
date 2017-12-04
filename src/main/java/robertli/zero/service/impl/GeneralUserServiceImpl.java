@@ -207,7 +207,7 @@ public class GeneralUserServiceImpl implements GeneralUserService {
         emailSender.send(msg);
     }
 
-    private void addGeneralUser(UserRegister userRegister) {
+    private User addGeneralUser(UserRegister userRegister) {
         final String userPlatformName = UserService.USER_PLATFORM_GENERAL;
         final String username = userRegister.getAuthId().split(":")[2];
         final String usernameType = UserService.USERNAME_TYPE_EMAIL;
@@ -215,11 +215,11 @@ public class GeneralUserServiceImpl implements GeneralUserService {
         final String password = userRegister.getPassword();
         final String passwordSalt = userRegister.getPasswordSalt();
         final String name = userRegister.getName();
-        userService.addUser(userPlatformName, username, usernameType, label, password, passwordSalt, name, false);
+        return userService.addUser(userPlatformName, username, usernameType, label, password, passwordSalt, name, false);
     }
 
     @Override
-    public void verifyRegister(String verifiedCode) {
+    public String verifyRegister(String verifiedCode) {
         if (userRegisterDao.isExistVerifiedCode(verifiedCode) == false) {
             String errorDetail = "this register is not exist for code:" + verifiedCode;
             throw new RestException("REGISTER_NOT_EXIST", "Can't found any register for this verified code", errorDetail, HttpStatus.FORBIDDEN);
@@ -231,8 +231,9 @@ public class GeneralUserServiceImpl implements GeneralUserService {
             String errorDetail = "this user is exist:" + authId;
             throw new RestException("USER_EXIST", "This user is registered before.", errorDetail, HttpStatus.CONFLICT);
         }
-        addGeneralUser(userRegister);
+        final User user = addGeneralUser(userRegister);
         userRegisterDao.delete(userRegister);
+        return user.getUid();
     }
 
     @Override

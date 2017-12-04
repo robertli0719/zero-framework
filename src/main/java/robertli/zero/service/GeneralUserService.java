@@ -30,7 +30,14 @@ public interface GeneralUserService {
 
     public void sendRegisterVerificationEmail(String email);
 
-    public void verifyRegister(String verifiedCode);
+    /**
+     * After verify register, this function returns user's uid so that invoker
+     * can process something after register success
+     *
+     * @param verifiedCode
+     * @return uid
+     */
+    public String verifyRegister(String verifiedCode);
 
     public void applyPasswordResetToken(PasswordResetApplicationDto applicationDto);
 
