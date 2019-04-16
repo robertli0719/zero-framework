@@ -15,7 +15,6 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 
 /**
  * Design for AES encryption
@@ -37,38 +36,34 @@ public class AES {
         SecretKey key = keygen.generateKey();
         byte key_arr[] = key.getEncoded();
 
-        return DatatypeConverter.printBase64Binary(key_arr);
+        return java.util.Base64.getEncoder().encodeToString(key_arr);
     }
 
     public static String encrypt(String line, String key_str) {
         byte[] result_byte = null;
-        byte key_arr[] = DatatypeConverter.parseBase64Binary(key_str);
+        byte key_arr[] = java.util.Base64.getDecoder().decode(key_str);
         SecretKey key = new SecretKeySpec(key_arr, 0, key_arr.length, "AES");
         Cipher cipher;
         try {
             cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             result_byte = cipher.doFinal(line.getBytes());
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException ex) {
-            System.err.println("fail");
-        } catch (IllegalBlockSizeException | BadPaddingException ex) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
             System.err.println("fail");
         }
-        return DatatypeConverter.printBase64Binary(result_byte);
+        return java.util.Base64.getEncoder().encodeToString(result_byte);
     }
 
     public static String decrypt(String secret, String key_str) {
         byte[] result_byte = null;
-        byte key_arr[] = DatatypeConverter.parseBase64Binary(key_str);
+        byte key_arr[] = java.util.Base64.getDecoder().decode(key_str);
         SecretKey key = new SecretKeySpec(key_arr, 0, key_arr.length, "AES");
         try {
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.DECRYPT_MODE, key);
-            byte[] arr = DatatypeConverter.parseBase64Binary(secret);
+            byte[] arr = java.util.Base64.getDecoder().decode(secret);
             result_byte = cipher.doFinal(arr);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException ex) {
-            System.err.println("fail");
-        } catch (IllegalBlockSizeException | BadPaddingException ex) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
             System.err.println("fail");
         }
 
